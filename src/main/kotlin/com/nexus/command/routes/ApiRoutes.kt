@@ -3,12 +3,18 @@ package com.nexus.command.routes
 import com.nexus.command.model.Command
 import com.nexus.command.registry.DeviceRegistry
 import com.nexus.command.ws.handleClient
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.websocket.webSocket
+import io.ktor.websocket.Frame
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -23,7 +29,10 @@ fun Route.apiRoutes() {
     route("/api") {
 
         get("/devices") {
-            call.respondText(json.encodeToString(DeviceRegistry.snapshot()), ContentType.Application.Json)
+            call.respondText(
+                json.encodeToString(DeviceRegistry.snapshot()),
+                ContentType.Application.Json
+            )
         }
 
         post("/command") {
