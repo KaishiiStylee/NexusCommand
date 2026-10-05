@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.9.24"
     kotlin("plugin.serialization") version "1.9.24"
     application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.nexus.command"
@@ -27,16 +28,3 @@ application {
 }
 
 kotlin { jvmToolchain(17) }
-
-tasks.register<Jar>("fatJar") {
-    archiveClassifier.set("all")
-    manifest { attributes["Main-Class"] = "com.nexus.command.ApplicationKt" }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(sourceSets.main.get().output)
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get()
-            .filter { it.name.endsWith("jar") }
-            .map { zipTree(it) }
-    })
-}
